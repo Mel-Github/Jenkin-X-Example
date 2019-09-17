@@ -15,6 +15,6 @@ public class DemoApplication {
 
 	@RequestMapping("/ping")
 	public String ping(){
-		return "pong ping pong ";
+		return "pong ping pong dynatrace";
 	}
 }

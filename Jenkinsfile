@@ -64,7 +64,7 @@ pipeline {
           envId: 'Dynatrace Tenant',
           tagMatchRules: [
             [
-              meTypes: [[meType]: 'SERVICE']],
+              meTypes: [[meType: 'SERVICE']],
               tags:[
                 [context: 'CONTEXTLESS', key: 'app', value= "${env.APP_NAME}"],
                 [context: 'CONTEXTLESS', key: 'environment', value= 'jx-staging']

@@ -60,18 +60,31 @@ pipeline {
         branch 'master'
       }
       steps {
-        container('maven') {
-          dir('charts/jenkin-x-example') {
-            sh "jx step changelog --version v\$(cat ../../VERSION)"
+        createDynatraceDeploymentEvent(
+          envId: 'Dynatrace Tenant',
+          tagMatchRules: [
+            [
+              meTypes: [[meType]: 'SERVICE']],
+              tags:[
+                [context: 'CONTEXTLESS', key: 'app', value= "${env.APP_NAME}"],
+                [context: 'CONTEXTLESS', key: 'environment', value= 'jx-staging']
+              ]
+            ]
+          ]
+        ) {
+          container('maven') {
+            dir('charts/jenkin-x-example') {
+              sh "jx step changelog --version v\$(cat ../../VERSION)"
 
-            // release the helm chart
-            sh "jx step helm release"
+              // release the helm chart
+              sh "jx step helm release"
 
-            // promote through all 'Auto' promotion Environments
-            sh "jx promote -b --all-auto --timeout 1h --version \$(cat ../../VERSION)"
-          }
+              // promote through all 'Auto' promotion Environments
+              sh "jx promote -b --all-auto --timeout 1h --version \$(cat ../../VERSION)"
+            }
+         }
         }
-      }
+      } // end of "Promote to Environments" stage
     }
   }
   post {
